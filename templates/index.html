@@ -5,148 +5,155 @@
     <meta charset="UTF-8">
     <title>Car Price Predictor</title>
     <link rel="stylesheet" href="static/css/style.css">
-    <link rel="stylesheet" type="text/css"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #1f4037, #99f2c8);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
 
+        .card {
+            margin-top: 60px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        select, input[type="number"] {
+            height: 45px;
+            border-radius: 8px;
+        }
+
+        button {
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        h1, h5 {
+            margin-top: 10px;
+        }
+
+        #prediction {
+            font-size: 20px;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+    </style>
 </head>
 
-<body class="bg-dark">
-
+<body>
     <div class="container">
-        <div class="row">
-            <div class="card mt-5" style="width: 100%; height: 100%">
-                <div class="card-header" style="text-align: center">
-                    <h1>Welcome to Car Price Predictor</h1>
+        <div class="row justify-content-center">
+            <div class="card col-lg-8">
+                <div class="card-header text-center">
+                    <h1><i class="fas fa-car-side"></i> Car Price Predictor</h1>
                 </div>
                 <div class="card-body">
-                    <div class="col-12" style="text-align: center">
-                        <h5>This app predicts the price of a car you want to sell. Try filling the details below:</h5>
-                    </div>
-                    <br>
-                    <form id="predictionForm" method="post" accept-charset="utf-8" name="Modelform" onsubmit="return send_data(event)">
-                        <div class="col-md-10 form-group mx-auto" style="text-align: center">
-                            <label><b>Select the company:</b> </label><br>
+                    <h5 class="text-center mb-4">Predict the price of a car you want to sell by filling out the details below:</h5>
+
+                    <form id="predictionForm" method="post" name="Modelform" onsubmit="return send_data(event)">
+                        <div class="form-group">
+                            <label>Select the company:</label>
                             <select class="form-control" id="company" name="company" required onchange="load_car_models()">
                                 {% for company in companies %}
                                 <option value="{{ company }}">{{ company }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-md-10 form-group mx-auto" style="text-align: center">
-                            <label><b>Select the model:</b> </label><br>
+
+                        <div class="form-group">
+                            <label>Select the model:</label>
                             <select class="form-control" id="car_models" name="car_models" required>
                                 {% for model in car_models %}
                                 <option value="{{ model }}">{{ model }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-md-10 form-group mx-auto" style="text-align: center">
-                            <label><b>Select Year of Purchase:</b> </label><br>
+
+                        <div class="form-group">
+                            <label>Select Year of Purchase:</label>
                             <select class="form-control" id="year" name="year" required>
                                 {% for year in years %}
                                 <option value="{{ year }}">{{ year }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-md-10 form-group mx-auto" style="text-align: center">
-                            <label><b>Select the Fuel Type:</b> </label><br>
+
+                        <div class="form-group">
+                            <label>Select the Fuel Type:</label>
                             <select class="form-control" id="fuel_type" name="fuel_type" required>
                                 {% for fuel in fuel_types %}
                                 <option value="{{ fuel }}">{{ fuel }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-md-10 form-group mx-auto" style="text-align: center">
-                            <label><b>Enter the Number of Kilometres that the car has travelled:</b> </label><br>
-                            <input type="number" min="0" class="form-control" id="kilo_driven" name="kilo_driven"
-                                placeholder="Enter the kilometres driven " required>
+
+                        <div class="form-group">
+                            <label>Enter the Number of Kilometres the car has travelled:</label>
+                            <input type="number" min="0" class="form-control" id="kilo_driven" name="kilo_driven" placeholder="e.g. 50000" required>
                         </div>
-                        <div class="col-md-10 form-group mx-auto" style="text-align: center">
-                            <button type="submit" class="btn btn-primary form-control">Predict Price</button>
-                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Predict Price</button>
                     </form>
-                    <br>
-                    <div class="row">
-                        <div class="col-12" style="text-align: center">
-                            <h4><span id="prediction"></span></h4>
-                        </div>
+
+                    <div class="text-center mt-4">
+                        <h4><span id="prediction"></span></h4>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
-        // We'll store the car models per company as a dictionary from server side, passed in a JS variable
-        // So you need to prepare this in your Flask context and pass as JSON (see Flask code below)
         var carModelsByCompany = {{ car_models_by_company | tojson | safe }};
 
         function load_car_models() {
-            var companySelect = document.getElementById("company");
+            var company = document.getElementById("company").value;
             var carModelSelect = document.getElementById("car_models");
-
-            var selectedCompany = companySelect.value;
-
-            // Clear previous models
             carModelSelect.innerHTML = "";
 
-            if (selectedCompany === "Select Company") {
-                // Add default option
-                var option = document.createElement("option");
-                option.value = "";
-                option.innerHTML = "Select Model";
-                carModelSelect.appendChild(option);
-                return;
-            }
-
-            var models = carModelsByCompany[selectedCompany] || [];
+            var models = carModelsByCompany[company] || [];
 
             if (models.length === 0) {
-                var option = document.createElement("option");
-                option.value = "";
-                option.innerHTML = "No models available";
-                carModelSelect.appendChild(option);
+                var opt = document.createElement("option");
+                opt.innerHTML = "No models available";
+                carModelSelect.appendChild(opt);
                 return;
             }
 
-            // Populate models
             models.forEach(function (model) {
-                var option = document.createElement("option");
-                option.value = model;
-                option.innerHTML = model;
-                carModelSelect.appendChild(option);
+                var opt = document.createElement("option");
+                opt.value = model;
+                opt.innerHTML = model;
+                carModelSelect.appendChild(opt);
             });
         }
 
-        // Handle form submit via AJAX
         function send_data(event) {
             event.preventDefault();
-
             var form = document.getElementById('predictionForm');
             var formData = new FormData(form);
 
-            // Simple client side validation for Select Company etc.
-            if (
-                formData.get('company') === "Select Company" ||
-                formData.get('car_models') === "" ||
-                formData.get('year') === "Select Year" ||
-                formData.get('fuel_type') === "Select Fuel Type" ||
-                formData.get('kilo_driven') === ""
-            ) {
-                alert("Please fill all the fields correctly.");
-                return false;
-            }
-
-            document.getElementById('prediction').innerHTML = "Wait! Predicting Price.....";
+            document.getElementById('prediction').innerHTML = "Please wait... Predicting...";
 
             fetch('/predict', {
                 method: 'POST',
@@ -159,31 +166,23 @@
                     return response.text();
                 })
                 .then(data => {
-                    document.getElementById('prediction').innerHTML = "Prediction: " + data;
+                    document.getElementById('prediction').innerHTML = "Predicted Price: " + data;
                 })
                 .catch(error => {
                     document.getElementById('prediction').innerHTML = "Error: " + error.message;
                 });
 
-            return false; // Prevent default form submission
+            return false;
         }
 
-        // Load models initially for the first selected company on page load
         document.addEventListener("DOMContentLoaded", function () {
             load_car_models();
         });
     </script>
 
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-        crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </body>
 
 </html>
