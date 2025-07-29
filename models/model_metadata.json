@@ -1,0 +1,19 @@
+{
+    "features": [
+        "name",
+        "company",
+        "year",
+        "kms_driven",
+        "fuel_type"
+    ],
+    "target": "Price",
+    "metrics": {
+        "r2_score": 0.8991157554877304,
+        "mae": 98320.64632381072,
+        "rmse": 139169.96557674668
+    },
+    "cv_scores": {
+        "mean": 0.5843186037152293,
+        "std": 0.1274046527397588
+    }
+}

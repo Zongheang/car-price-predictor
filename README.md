@@ -39,3 +39,10 @@ jupyter notebook
 ## Conclusion
 
 The car price prediction model is trained on the Quikr Car Dataset and can predict the price of a car based on its 
+
+
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+
+pip freeze > requirements.txt
